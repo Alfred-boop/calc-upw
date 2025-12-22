@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Deux tableaux Handsontable</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@11.1.0/dist/handsontable.full.min.css">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  padding: 40px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  background: #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<!-- ===== PARAMETRES ===== -->
+<div class="container">
+  <h1>Paramètres</h1>
+  <div id="hot-simple"></div>
+</div>
+
+<!-- ===== CALCULATRICE ===== -->
+<div class="container">
+  <h1>Calculatrice</h1>
+  <div id="hot-complex"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/handsontable@11.1.0/dist/handsontable.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hyperformula@2.6.0/dist/hyperformula.full.min.js"></script>
+
+
+<script>
+/* ==============================
+   TABLEAU 1 — PARAMETRES
+================================ */
+// const simpleData = [
+//  ['', ''],
+//  ['Objectif (en %)', 'blue'],
+//];
+
+new Handsontable(document.getElementById('hot-simple'), {
+  data: [], //simpleData,
+  colHeaders: ['Énergie utilisée', 'Objectif (en %)'],
+  columns: [
+    //{},
+    //{ type: 'numeric' },
+    { type: 'dropdown', source: ['Fossile', 'Hydraulique', 'Éolienne'], },
+    { type: 'dropdown', source: ['80', '85', '90', '95', '97', '100'], },
+  ],
+  minRows: 1,
+  autoWrapRow: true,
+  autoWrapCol: true,
+  stretchH: 'all',
+  licenseKey: 'non-commercial-and-evaluation',
+});
+
+// 80 - 85 - 90 - 95 - 97 - 100
+
+/* ==============================
+   TABLEAU 2 — CALCULATRICE
+================================ */
+const data = [
+["", "Zone géographique", "Nom de borne", "Borne à remplir", "Énergie utilisée", "Énergie actuelle en %", "Objectif en %", "Cellules requises", "Cellules entières requises", "Capacité après remplissage"],
+["", "", "", "Aucune", "", "", "", "=SUM(H6:H63)", "=SUM(I6:I63)", "RESET"],
+["Civile", "", "", "", "", "", "", "", "", ""],
+["Civile", "Nord", "Base Militaire", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H6,0)", "=ROUND(IF($D6,$F6+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E6,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I6),0),0)"],
+["", "", "Culs nus", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H7,0)", "=ROUND(IF($D7,$F7+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E7,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I7),0),0)"],
+["", "", "Paleto", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H8,0)", "=ROUND(IF($D8,$F8+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E8,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I8),0),0)"],
+["", "", "Nord", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H9,0)", "=ROUND(IF($D9,$F9+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E9,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I9),0),0)"],
+["", "", "Grapeseed", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H10,0)", "=ROUND(IF($D10,$F10+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E10,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I10),0),0)"],
+["", "Est", "Sandy Nord", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H11,0)", "=ROUND(IF($D11,$F11+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E11,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I11),0),0)"],
+["", "", "Prison", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H12,0)", "=ROUND(IF($D12,$F12+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E12,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I12),0),0)"],
+["", "", "NOOSE", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H13,0)", "=ROUND(IF($D13,$F13+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E13,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I13),0),0)"],
+["", "", "Zone Indu", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H14,0)", "=ROUND(IF($D14,$F14+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E14,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I14),0),0)"],
+["", "", "LSMC Civile", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H15,0)", "=ROUND(IF($D15,$F15+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E15,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I15),0),0)"],
+["", "Ouest", "Ferme", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H16,0)", "=ROUND(IF($D16,$F16+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E16,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I16),0),0)"],
+["", "", "Vinewood", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H17,0)", "=ROUND(IF($D17,$F17+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E17,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I17),0),0)"],
+["", "", "Golf", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H18,0)", "=ROUND(IF($D18,$F18+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E18,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I18),0),0)"],
+["", "", "Kortz", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H19,0)", "=ROUND(IF($D19,$F19+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E19,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I19),0),0)"],
+["", "Sud", "Centrale ", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H20,0)", "=ROUND(IF($D20,$F20+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E20,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I20),0),0)"],
+["", "", "Rockford Plaza", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H21,0)", "=ROUND(IF($D21,$F21+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E21,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I21),0),0)"],
+["", "", "Grande roue", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H22,0)", "=ROUND(IF($D22,$F22+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E22,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I22),0),0)"],
+["", "", "MHC", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H23,0)", "=ROUND(IF($D23,$F23+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E23,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I23),0),0)"],
+["", "", "Aéroport", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H24,0)", "=ROUND(IF($D24,$F24+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E24,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I24),0),0)"],
+["Entreprise", "", "", "", "", "", "", "", "", ""],
+["Entreprise", "Nord", "Château Marius", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H26,0)", "=ROUND(IF($D26,$F26+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E26,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I26),0),0)"],
+["", "", "PAWL", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H27,0)", "=ROUND(IF($D27,$F27+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E27,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I27),0),0)"],
+["", "", "MTP", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H28,0)", "=ROUND(IF($D28,$F28+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E28,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I28),0),0)"],
+["", "", "LSCS", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H29,0)", "=ROUND(IF($D29,$F29+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E29,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I29),0),0)"],
+["", "", "BCSO", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H30,0)", "=ROUND(IF($D30,$F30+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E30,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I30),0),0)"],
+["", "", "LSMC Nord", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H31,0)", "=ROUND(IF($D31,$F31+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E31,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I31),0),0)"],
+["", "", "Yellow Jack", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H32,0)", "=ROUND(IF($D32,$F32+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E32,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I32),0),0)"],
+["", "", "New Gahray Nord", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H33,0)", "=ROUND(IF($D33,$F33+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E33,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I33),0),0)"],
+["", "Sud", "STONK", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H34,0)", "=ROUND(IF($D34,$F34+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E34,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I34),0),0)"],
+["", "", "MDR", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H35,0)", "=ROUND(IF($D35,$F35+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E35,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I35),0),0)"],
+["", "", "Carl Jr", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H36,0)", "=ROUND(IF($D36,$F36+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E36,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I36),0),0)"],
+["", "", "LSPD", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H37,0)", "=ROUND(IF($D37,$F37+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E37,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I37),0),0)"],
+["", "", "DeMetal", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H38,0)", "=ROUND(IF($D38,$F38+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E38,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I38),0),0)"],
+["", "", "LSMC", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H39,0)", "=ROUND(IF($D39,$F39+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E39,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I39),0),0)"],
+["", "", "Bahama Unicorn", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H40,0)", "=ROUND(IF($D40,$F40+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E40,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I40),0),0)"],
+["", "", "New Gahray Sud", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H41,0)", "=ROUND(IF($D41,$F41+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E41,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I41),0),0)"],
+["", "", "BlueBird", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H42,0)", "=ROUND(IF($D42,$F42+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E42,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I42),0),0)"],
+["", "", "Twitch News", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H43,0)", "=ROUND(IF($D43,$F43+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E43,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I43),0),0)"],
+["", "", "Bahama Mamas", false, "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H44,0)", "=ROUND(IF($D44,$F44+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E44,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I44),0),0)"],
+["", "", "You News", false, "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H45,0)", "=ROUND(IF($D45,$F45+(INDEX('Infos & Tarifs'!$A$4:$C$6,MATCH($E45,'Infos & Tarifs'!$A$4:$A$6,0),3)*100*I45),0),0)"],
+["Recharge", "", "", "", "", "", "", "", "", ""],
+["Recharge", "Nord", "Paleto R", "", "=$E$2", "", "", "=ROUNDDOWN(H47,0)", "=ROUND(IF($D47,$F47*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E47,'Infos & Tarifs'!$A$4:$A$6,0),4)*I47),0),0)"],
+["", "", "Zancudo", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H48,0)", "=ROUND(IF($D48,$F48*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E48,'Infos & Tarifs'!$A$4:$A$6,0),4)*I48),0),0)"],
+["", "", "Grapeseed", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H49,0)", "=ROUND(IF($D49,$F49*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E49,'Infos & Tarifs'!$A$4:$A$6,0),4)*I49),0),0)"],
+["", "", "Sandy Shores", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H50,0)", "=ROUND(IF($D50,$F50*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E50,'Infos & Tarifs'!$A$4:$A$6,0),4)*I50),0),0)"],
+["", "", "Route 68", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H51,0)", "=ROUND(IF($D51,$F51*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E51,'Infos & Tarifs'!$A$4:$A$6,0),4)*I51),0),0)"],
+["", "", "UPW", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H52,0)", "=ROUND(IF($D52,$F52*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E52,'Infos & Tarifs'!$A$4:$A$6,0),4)*I52),0),0)"],
+["", "", "Palomino", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H53,0)", "=ROUND(IF($D53,$F53*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E53,'Infos & Tarifs'!$A$4:$A$6,0),4)*I53),0),0)"],
+["", "", "Tongva Valley", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H54,0)", "=ROUND(IF($D54,$F54*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E54,'Infos & Tarifs'!$A$4:$A$6,0),4)*I54),0),0)"],
+["", "Sud", "Clinton", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H55,0)", "=ROUND(IF($D55,$F55*1200/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E55,'Infos & Tarifs'!$A$4:$A$6,0),4)*I55),0),0)"],
+["", "", "Mirror Park", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H56,0)", "=ROUND(IF($D56,$F56*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E56,'Infos & Tarifs'!$A$4:$A$6,0),4)*I56),0),0)"],
+["", "", "Popular", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H57,0)", "=ROUND(IF($D57,$F57*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E57,'Infos & Tarifs'!$A$4:$A$6,0),4)*I57),0),0)"],
+["", "", "LSMC R", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H58,0)", "=ROUND(IF($D58,$F58*1200/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E58,'Infos & Tarifs'!$A$4:$A$6,0),4)*I58),0),0)"],
+["", "", "La Puerta", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H59,0)", "=ROUND(IF($D59,$F59*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E59,'Infos & Tarifs'!$A$4:$A$6,0),4)*I59),0),0)"],
+["", "", "Auto-école", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H60,0)", "=ROUND(IF($D60,$F60*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E60,'Infos & Tarifs'!$A$4:$A$6,0),4)*I60),0),0)"],
+["", "", "Little Seoul", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H61,0)", "=ROUND(IF($D61,$F61*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E61,'Infos & Tarifs'!$A$4:$A$6,0),4)*I61),0),0)"],
+["", "", "Del Perro", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H62,0)", "=ROUND(IF($D62,$F62*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E62,'Infos & Tarifs'!$A$4:$A$6,0),4)*I62),0),0)"],
+["", "", "GOH", "", "=$E$2", "", "=$G$2", "", "=ROUNDDOWN(H63,0)", "=ROUND(IF($D63,$F63*600/100+(INDEX('Infos & Tarifs'!$A$4:$E$6,MATCH($E63,'Infos & Tarifs'!$A$4:$A$6,0),4)*I63),0),0)"]
+];
+
+new Handsontable(document.getElementById('hot-complex'), {
+  data: data,
+  rowHeaders: true,
+  colHeaders: true,
+  contextMenu: true,
+  filters: true,
+  dropdownMenu: true,
+  manualColumnResize: true,
+  stretchH: 'all',
+
+  mergeCells: [
+    {"row": 2, "col": 0, "rowspan": 1, "colspan": 11},
+    {"row": 22, "col": 0, "rowspan": 1, "colspan": 11},
+    {"row": 43, "col": 0, "rowspan": 1, "colspan": 11},
+    {"row": 3, "col": 0, "rowspan": 19, "colspan": 1},
+    {"row": 23, "col": 0, "rowspan": 20, "colspan": 1},
+    {"row": 44, "col": 0, "rowspan": 17, "colspan": 1},
+    {"row": 0, "col": 1, "rowspan": 2, "colspan": 1},
+    {"row": 0, "col": 2, "rowspan": 2, "colspan": 1},
+    {"row": 0, "col": 5, "rowspan": 2, "colspan": 1}
+  ],
+
+  formulas: {
+    engine: HyperFormula
+  },
+
+  licenseKey: 'non-commercial-and-evaluation'
+});
+</script>
+
+</body>
+</html>
