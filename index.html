@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculatrice UPW</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@11.1.0/dist/handsontable.full.min.css">
+
+<style>
+/* ===================== BASE ===================== */
+:root {
+  --bg-light: #f5f5f5;
+  --bg-dark: #121212;
+  --container-light: #ddd;
+  --container-dark: #1e1e1e;
+  --text-light: #222;
+  --text-dark: #e0e0e0;
+  --table-bg-light: #fff;
+  --table-bg-dark: #1b1b1b;
+  --border-light: #999;
+  --border-dark: #444;
+  --header-bg-light: #eee;
+  --header-bg-dark: #2a2a2a;
+  --params-row-bg: #8A8684;
+  --params-row-text: #000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  padding: 20px;
+  margin: 0;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1500px;
+  margin: 0 auto 20px;
+  background: var(--container-light);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: background 0.4s ease;
+}
+
+/* ===================== HEADER ===================== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+/* ===================== SWITCH THEME ===================== */
+.switch {
+  position: relative;
+  width: 60px;
+  height: 30px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #bbb;
+  border-radius: 30px;
+  transition: background 0.4s ease;
+  cursor: pointer;
+}
+
+.slider::before {
+  content: "☀️";
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: transform 0.4s ease;
+}
+
+input:checked + .slider {
+  background: #4caf50;
+}
+
+input:checked + .slider::before {
+  transform: translateX(30px);
+  content: "🌙";
+}
+
+/* ===================== TABLEAUX ===================== */
+.handsontable {
+  border: 1px solid var(--border-light);
+  background: var(--table-bg-light);
+}
+
+.handsontable td,
+.handsontable th {
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-light);
+}
+
+.handsontable thead th {
+  font-weight: bold;
+  background: var(--header-bg-light);
+}
+
+/* Ligne unique du tableau "Paramètres" */
+#hot-simple tbody tr td {
+  background-color: var(--params-row-bg) !important;
+  color: var(--params-row-text) !important;
+}
+
+/* ===================== LISTES DÉROULANTES ===================== */
+.handsontable .htAutocompleteArrow {
+  color: var(--text-light);
+}
+
+.handsontable .htDropdownMenu,
+.handsontable .listbox {
+  background: #e0e0e0 !important;
+}
+
+.handsontable .listbox .ht_master table td {
+  background: #e0e0e0 !important;
+  color: #000 !important;
+}
+
+.handsontable .listbox .ht_master table td.current,
+.handsontable .listbox .ht_master table td:hover {
+  background: #c0c0c0 !important;
+  color: #000 !important;
+}
+
+/* Forcer les deux premières lignes de la liste déroulante */
+.handsontable .listbox .ht_master table tr:nth-child(1) td,
+.handsontable .listbox .ht_master table tr:nth-child(2) td {
+  background: #e0e0e0 !important;
+  color: #000 !important;
+}
+
+/* ===================== PALETTES CLAIRES ===================== */
+.civile-nord-light  { background: #e3f2fd !important; }
+.civile-nord-dark   { background: #bbdefb !important; }
+.civile-est-light   { background: #e8f5e9 !important; }
+.civile-est-dark    { background: #c8e6c9 !important; }
+.civile-ouest-light { background: #fff3e0 !important; }
+.civile-ouest-dark  { background: #ffe0b2 !important; }
+.civile-sud-light   { background: #fce4ec !important; }
+.civile-sud-dark    { background: #f8bbd0 !important; }
+
+.entreprise-nord-light { background: #ede7f6 !important; }
+.entreprise-nord-dark  { background: #d1c4e9 !important; }
+.entreprise-sud-light  { background: #e0f2f1 !important; }
+.entreprise-sud-dark   { background: #b2dfdb !important; }
+
+.recharge-nord-light { background: #f3e5f5 !important; }
+.recharge-nord-dark  { background: #e1bee7 !important; }
+.recharge-sud-light  { background: #fffde7 !important; }
+.recharge-sud-dark   { background: #fff9c4 !important; }
+
+/* ===================== MODE SOMBRE ===================== */
+body.dark-mode {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .container {
+  background: var(--container-dark);
+}
+
+body.dark-mode .handsontable {
+  background: var(--table-bg-dark);
+  border: 1px solid var(--border-dark);
+}
+
+body.dark-mode .handsontable td,
+body.dark-mode .handsontable th {
+  border: 1px solid var(--border-dark) !important;
+  color: var(--text-dark) !important;
+}
+
+body.dark-mode .handsontable thead th {
+  background: var(--header-bg-dark);
+}
+
+body.dark-mode .handsontable .htAutocompleteArrow {
+  color: var(--text-dark);
+}
+
+/* Ligne unique en mode sombre */
+body.dark-mode #hot-simple tbody tr td {
+  background-color: var(--params-row-bg) !important;
+  color: var(--params-row-text) !important;
+}
+
+/* Forcer les listes déroulantes en mode sombre */
+body.dark-mode .handsontable .htDropdownMenu,
+body.dark-mode .handsontable .listbox {
+  background: #e0e0e0 !important;
+}
+
+body.dark-mode .handsontable .listbox .ht_master table td {
+  background: #e0e0e0 !important;
+  color: #000 !important;
+}
+
+body.dark-mode .handsontable .listbox .ht_master table td.current,
+body.dark-mode .handsontable .listbox .ht_master table td:hover {
+  background: #c0c0c0 !important;
+  color: #000 !important;
+}
+
+body.dark-mode .handsontable .listbox .ht_master table tr:nth-child(1) td,
+body.dark-mode .handsontable .listbox .ht_master table tr:nth-child(2) td {
+  background: #e0e0e0 !important;
+  color: #000 !important;
+}
+
+/* ===================== PALETTES SOMBRES ===================== */
+body.dark-mode .civile-nord-light  { background: #1e3a5f !important; }
+body.dark-mode .civile-nord-dark   { background: #162a44 !important; }
+body.dark-mode .civile-est-light   { background: #1f4d3a !important; }
+body.dark-mode .civile-est-dark    { background: #16372a !important; }
+body.dark-mode .civile-ouest-light { background: #5a3b1a !important; }
+body.dark-mode .civile-ouest-dark  { background: #402812 !important; }
+body.dark-mode .civile-sud-light   { background: #5a1f33 !important; }
+body.dark-mode .civile-sud-dark    { background: #401625 !important; }
+
+body.dark-mode .entreprise-nord-light { background: #3b2f5f !important; }
+body.dark-mode .entreprise-nord-dark  { background: #2a2144 !important; }
+body.dark-mode .entreprise-sud-light  { background: #1f4a47 !important; }
+body.dark-mode .entreprise-sud-dark   { background: #163533 !important; }
+
+body.dark-mode .recharge-nord-light { background: #4a2a5a !important; }
+body.dark-mode .recharge-nord-dark  { background: #351d40 !important; }
+body.dark-mode .recharge-sud-light  { background: #5a571f !important; }
+body.dark-mode .recharge-sud-dark   { background: #403d16 !important; }
+
+/* ===================== RESPONSIVE ===================== */
+#hot-complex {
+  width: 100%;
+  flex: 1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Paramètres</h1>
+    <label class="switch">
+      <input type="checkbox" id="themeToggle" aria-label="Basculer le mode sombre">
+      <span class="slider"></span>
+    </label>
+  </div>
+  <div id="hot-simple"></div>
+</div>
+
+<div class="container" style="height: 80vh; display: flex; flex-direction: column;">
+  <div class="header">
+    <h1>Calculatrice</h1>
+  </div>
+  <div id="hot-complex"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/handsontable@11.1.0/dist/handsontable.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hyperformula@2.6.0/dist/hyperformula.full.min.js"></script>
+
+<script>
+'use strict';
+
+/* ===== CONSTANTES ===== */
+const STORAGE_KEY = 'theme';
+const THEME_DARK = 'dark';
+const THEME_LIGHT = 'light';
+
+const DROPDOWN_ENERGIE = ['Fossile', 'Hydraulique', 'Éolienne'];
+const DROPDOWN_OBJECTIF = ['80', '85', '90', '95', '97', '100'];
+
+const HANDSONTABLE_CONFIG = {
+  licenseKey: 'non-commercial-and-evaluation',
+  className: 'htCenter htMiddle',
+  stretchH: 'all',
+  width: '100%',
+  autoRowSize: true,
+  formulas: { engine: HyperFormula }
+};
+
+/* ===== GESTION DU THÈME ===== */
+const themeToggle = document.getElementById('themeToggle');
+
+// Initialiser le thème
+const savedTheme = localStorage.getItem(STORAGE_KEY);
+if (savedTheme === THEME_DARK) {
+  document.body.classList.add('dark-mode');
+  themeToggle.checked = true;
+}
+
+// Écouter les changements
+themeToggle.addEventListener('change', () => {
+  const isDark = themeToggle.checked;
+  document.body.classList.toggle('dark-mode', isDark);
+  localStorage.setItem(STORAGE_KEY, isDark ? THEME_DARK : THEME_LIGHT);
+});
+
+/* ===== TABLEAU PARAMÈTRES ===== */
+new Handsontable(document.getElementById('hot-simple'), {
+  ...HANDSONTABLE_CONFIG,
+  data: [['', '', '', '', '']],
+  colHeaders: [
+    'Énergie utilisée',
+    'Objectif (%)',
+    'Cellules Fossiles requises',
+    'Cellules Hydrauliques requises',
+    'Cellules Éoliennes requises'
+  ],
+  columns: [
+    { type: 'dropdown', source: DROPDOWN_ENERGIE },
+    { type: 'dropdown', source: DROPDOWN_OBJECTIF },
+    {}, {}, {}
+  ]
+});
+
+/* ===== TABLEAU CALCULATRICE ===== */
+const dataCalculatrice = [
+  ['Civile', 'Nord', 'Base Militaire', '', '', '', '', '', ''],
+  ['', '', 'Culs nus', '', '', '', '', '', ''],
+  ['', '', 'Paleto', '', '', '', '', '', ''],
+  ['', '', 'Nord', '', '', '', '', '', ''],
+  ['', '', 'Grapeseed', '', '', '', '', '', ''],
+  ['', 'Est', 'Sandy Nord', '', '', '', '', '', ''],
+  ['', '', 'Prison', '', '', '', '', '', ''],
+  ['', '', 'NOOSE', '', '', '', '', '', ''],
+  ['', '', 'Zone Indu', '', '', '', '', '', ''],
+  ['', '', 'LSMC Civile', '', '', '', '', '', ''],
+  ['', 'Ouest', 'Ferme', '', '', '', '', '', ''],
+  ['', '', 'Vinewood', '', '', '', '', '', ''],
+  ['', '', 'Golf', '', '', '', '', '', ''],
+  ['', '', 'Kortz', '', '', '', '', '', ''],
+  ['', 'Sud', 'Centrale', '', '', '', '', '', ''],
+  ['', '', 'Rockford Plaza', '', '', '', '', '', ''],
+  ['', '', 'Grande roue', '', '', '', '', '', ''],
+  ['', '', 'MHC', '', '', '', '', '', ''],
+  ['', '', 'Aéroport', '', '', '', '', '', ''],
+  ['Entreprise', 'Nord', 'Château Marius', '', '', '', '', '', ''],
+  ['', '', 'PAWL', '', '', '', '', '', ''],
+  ['', '', 'MTP', '', '', '', '', '', ''],
+  ['', '', 'LSCS', '', '', '', '', '', ''],
+  ['', '', 'BCSO', '', '', '', '', '', ''],
+  ['', '', 'LSMC Nord', '', '', '', '', '', ''],
+  ['', '', 'Yellow Jack', '', '', '', '', '', ''],
+  ['', '', 'New Gahray Nord', '', '', '', '', '', ''],
+  ['', 'Sud', 'STONK', '', '', '', '', '', ''],
+  ['', '', 'MDR', '', '', '', '', '', ''],
+  ['', '', 'Carl Jr', '', '', '', '', '', ''],
+  ['', '', 'LSPD', '', '', '', '', '', ''],
+  ['', '', 'DeMetal', '', '', '', '', '', ''],
+  ['', '', 'LSMC', '', '', '', '', '', ''],
+  ['', '', 'Bahama Unicorn', '', '', '', '', '', ''],
+  ['', '', 'New Gahray Sud', '', '', '', '', '', ''],
+  ['', '', 'BlueBird', '', '', '', '', '', ''],
+  ['', '', 'Twitch News', '', '', '', '', '', ''],
+  ['', '', 'Bahama Mamas', '', '', '', '', '', ''],
+  ['', '', 'You News', '', '', '', '', '', ''],
+  ['Recharge', 'Nord', 'Paleto R', '', '', '', '', '', ''],
+  ['', '', 'Zancudo', '', '', '', '', '', ''],
+  ['', '', 'Grapeseed', '', '', '', '', '', ''],
+  ['', '', 'Sandy Shores', '', '', '', '', '', ''],
+  ['', '', 'Route 68', '', '', '', '', '', ''],
+  ['', '', 'UPW', '', '', '', '', '', ''],
+  ['', '', 'Palomino', '', '', '', '', '', ''],
+  ['', '', 'Tongva Valley', '', '', '', '', '', ''],
+  ['', 'Sud', 'Clinton', '', '', '', '', '', ''],
+  ['', '', 'Mirror Park', '', '', '', '', '', ''],
+  ['', '', 'Popular', '', '', '', '', '', ''],
+  ['', '', 'LSMC R', '', '', '', '', '', ''],
+  ['', '', 'La Puerta', '', '', '', '', '', ''],
+  ['', '', 'Auto-école', '', '', '', '', '', ''],
+  ['', '', 'Little Seoul', '', '', '', '', '', ''],
+  ['', '', 'Del Perro', '', '', '', '', '', ''],
+  ['', '', 'GOH', '', '', '', '', '', '']
+];
+
+const mergeCellsConfig = [
+  { row: 0, col: 0, rowspan: 19, colspan: 1 },
+  { row: 19, col: 0, rowspan: 20, colspan: 1 },
+  { row: 39, col: 0, rowspan: 17, colspan: 1 },
+  { row: 0, col: 1, rowspan: 5, colspan: 1 },
+  { row: 5, col: 1, rowspan: 5, colspan: 1 },
+  { row: 10, col: 1, rowspan: 4, colspan: 1 },
+  { row: 14, col: 1, rowspan: 5, colspan: 1 },
+  { row: 19, col: 1, rowspan: 8, colspan: 1 },
+  { row: 27, col: 1, rowspan: 12, colspan: 1 },
+  { row: 39, col: 1, rowspan: 8, colspan: 1 },
+  { row: 47, col: 1, rowspan: 9, colspan: 1 }
+];
+
+// Fonction utilitaire pour trouver la dernière valeur non vide dans une colonne
+function getLastValue(data, row, col) {
+  for (let r = row; r >= 0; r--) {
+    if (data[r][col]) {
+      return data[r][col].toLowerCase().replace(/\s+/g, '');
+    }
+  }
+  return null;
+}
+
+// Calculer la hauteur du tableau
+function calculateTableHeight() {
+  const container = document.getElementById('hot-complex').parentElement;
+  const header = container.querySelector('.header');
+  const headerHeight = header ? header.offsetHeight : 0;
+  const padding = 20; // padding container
+  return container.clientHeight - headerHeight - padding;
+}
+
+// Créer le tableau calculatrice
+const hotComplex = new Handsontable(document.getElementById('hot-complex'), {
+  ...HANDSONTABLE_CONFIG,
+  data: dataCalculatrice,
+  colHeaders: [
+    'Tournée',
+    'Zone géographique',
+    'Nom de borne',
+    'Borne à remplir',
+    'Énergie utilisée',
+    'Énergie actuelle (%)',
+    'Objectif (%)',
+    'Cellules requises',
+    'Capacité après remplissage'
+  ],
+  columns: [
+    {}, {}, {},
+    { type: 'checkbox' },
+    { type: 'dropdown', source: DROPDOWN_ENERGIE },
+    {},
+    { type: 'dropdown', source: DROPDOWN_OBJECTIF },
+    {}, {}
+  ],
+  mergeCells: mergeCellsConfig,
+  cells(row, col) {
+    const tournee = getLastValue(dataCalculatrice, row, 0);
+    const zone = getLastValue(dataCalculatrice, row, 1);
+    
+    if (tournee && zone) {
+      const variant = row % 2 === 0 ? 'light' : 'dark';
+      return { 
+        className: `${tournee}-${zone}-${variant} htCenter htMiddle` 
+      };
+    }
+    return { className: 'htCenter htMiddle' };
+  },
+  height: calculateTableHeight()
+});
+
+// Ajuster la hauteur lors du redimensionnement de la fenêtre
+let resizeTimeout;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    hotComplex.updateSettings({ height: calculateTableHeight() });
+  }, 150); // Debounce de 150ms
+});
+</script>
+
+</body>
+</html>
